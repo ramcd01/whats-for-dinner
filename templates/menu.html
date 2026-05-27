@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🍴 오늘 뭐 먹지? - 메뉴 선택 및 투표</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <h1>🍴 오늘 뭐 먹지?</h1>
+      </div>
+      
+      <div class="header-right">
+        <button type="button" id="btn-history" class="history-btn">
+          📅 과거 메뉴 기록 보기
+        </button>
+        <a href="{{ url_for('logout') }}" class="logout-btn">🚪 로그아웃</a>
+      </div>
+
+      <div id="history-modal" class="history-modal" style="display: none">
+        <div class="modal-content">
+          <h3>지난 식사 기록</h3>
+          <ul id="history-list">
+            <li><span>2026-05-01</span>: 김치찌개 (배달)</li>
+            <li><span>2026-05-02</span>: 삼겹살 (직접 요리)</li>
+          </ul>
+          <button type="button" id="close-history" class="close-btn">닫기</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <form id="menu-form">
+        
+        <section class="setup-section">
+          <h2>📅 기본 정보 설정</h2>
+          
+          <div class="form-group">
+            <label for="dinner-date">식사 날짜 선택:</label>
+            <input type="date" id="dinner-date" name="dinner-date" class="date-picker" required />
+          </div>
+
+          <div class="form-group">
+            <label>시간대 선택:</label>
+            <div class="radio-group">
+              <input type="radio" id="time-breakfast" name="meal-time" value="breakfast" />
+              <label for="time-breakfast">🌅 아침</label>
+              
+              <input type="radio" id="time-lunch" name="meal-time" value="lunch" checked />
+              <label for="time-lunch">☀️ 점심</label>
+              
+              <input type="radio" id="time-dinner" name="meal-time" value="dinner" />
+              <label for="time-dinner">🌙 저녁</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="meal-type">식사 방식:</label>
+            <select id="meal-type" name="meal-type" class="select-box">
+              <option value="🛵 배달 음식">🛵 배달 음식</option>
+              <option value="🏢 매장 식사 (외식)">🏢 매장 식사 (외식)</option>
+              <option value="🍳 직접 요리 (집밥)">🍳 직접 요리 (집밥)</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="menu-section">
+          <h2>🍔 메뉴 고르기</h2>
+
+          <div class="menu-options-container">
+            <div class="form-group">
+              <label for="user-name">작성자 이름:</label>
+              <input 
+                type="text" 
+                id="user-name" 
+                name="user-name" 
+                value="{{ username }}" 
+                readonly 
+                class="readonly-input"
+              />
+            </div>
+
+            <div class="option-item">
+              <input type="radio" name="menu-choice" id="opt-category" value="category" checked />
+              <label for="opt-category" class="radio-label">음식 종류 선택</label>
+              <select name="menu-category" id="menu-category" class="category-select">
+                <option value="한식">한식</option>
+                <option value="중식">중식</option>
+                <option value="일식">일식</option>
+                <option value="양식">양식</option>
+                <option value="분식">분식</option>
+              </select>
+            </div>
+
+            <div class="option-item">
+              <input type="radio" name="menu-choice" id="opt-direct" value="direct" />
+              <label for="opt-direct" class="radio-label">원하는 메뉴 직접 입력</label>
+              <input type="text" id="direct-menu-name" name="direct-menu-name" class="direct-input" placeholder="예: 김치찌개 또는 떡볶이" />
+            </div>
+          </div>
+
+          <div class="form-group notes-group">
+            <label for="meal-notes">💡 참고 사항 및 설명</label>
+            <textarea id="meal-notes" name="meal-notes" rows="3" placeholder="예: 오늘은 외식해요 / 다이어트 메뉴 원해요!"></textarea>
+          </div>
+
+          <button type="submit" id="btn-submit-opinion" class="primary-btn">✏️ 내 의견 등록하기</button>
+        </section>
+
+        <section class="roulette-section">
+          <h2>🎯 결정 장애 해결소</h2>
+          <p class="section-desc">무엇을 먹을지 결정하기 힘들 때는 무작위 돌림판을 이용해보세요!</p>
+          <button type="button" id="btn-trigger-roulette" class="roulette-btn">🎡 무작위 돌림판 생성하기</button>
+          
+          <div id="roulette-container" class="roulette-container" style="display: none;">
+            <div class="roulette-wheel">
+              <p>📍 한식 뷔페</p>
+              <p>📍 분식집</p>
+              <p>📍 트레이더스</p>
+              <p>📍 편의점</p>
+            </div>
+            <button type="button" id="btn-spin" class="spin-btn">SPIN!</button>
+          </div>
+        </section>
+
+        <section class="vote-section">
+          <h2>📊 메뉴 후보 & 투표하기</h2>
+          <p class="section-desc">선택한 조건에 등록된 가족들의 의견입니다. 마음에 드는 메뉴를 고르고 아래 버튼을 눌러주세요.</p>
+
+          <div class="opinion-list-container">
+            <table class="opinion-table">
+              <thead>
+                <tr>
+                  <th>선택</th>
+                  <th>작성자</th>
+                  <th>종류/방식</th>
+                  <th>추천 메뉴</th>
+                  <th>참고 사항</th>
+                  <th>현재 득표</th>
+                </tr>
+              </thead>
+              <tbody id="opinion-list-body">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: #aaa; padding: 20px;">
+                    날짜와 시간대를 선택하면 실시간 메뉴 후보 목록이 나타납니다.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="action-buttons-group">
+            <button id="btn-submit-vote" type="button" class="btn btn-primary">🗳️ 투표하기</button>
+            <button id="btn-show-results" type="button" class="btn btn-info">📈 결과 그래프</button>
+            <button id="btn-edit-menu" type="button" class="btn btn-warning">✏️ 의견 수정</button>
+            <button id="btn-delete-menu" type="button" class="btn btn-danger">🗑️ 의견 삭제</button>
+          </div>
+        </section>
+
+      </form>
+    </main>
+
+    <script src="{{ url_for('static', filename='menu.js') }}"></script>
+  </body>
+</html>

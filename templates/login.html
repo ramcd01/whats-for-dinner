@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍴 구성원 식사 여론조사 - 로그인/멤버 등록</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css'>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* 🌟 HTML 단에서 강제로 완벽한 정중앙 정렬을 보장하는 핵심 스타일 */
+    .form-clean-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* 세로 정중앙 */
+      align-items: center;    /* 가로 정중앙 */
+      padding: 0 30px;
+      box-sizing: border-box;
+    }
+    /* 타이틀과 서브텍스트 간격 미세 조정 */
+    .form-clean-wrapper h4.title { margin: 0 0 10px 0 !important; }
+    .form-clean-wrapper p.light { margin: 0 0 30px 0 !important; }
+    .form-clean-wrapper input { width: 75% !important; margin-bottom: 25px !important; }
+    .form-clean-wrapper button { width: 65% !important; margin-top: 5px !important; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="move">
+    <div class="p-button normal signin animated pulse">SIGN IN</div>
+  </div>
+  
+  <div class="welcome">
+    <h4 class="bold welcome-text">반가워요 여러분!</h4>
+    <p class="normal text">오늘의 메뉴 선택과 원활한 식사 조사를 위해 로그인해 주세요.</p>
+  </div>
+  
+  <div class="hello">
+    <h4 class="bold welcome-text">메뉴 정하러 가기</h4>
+    <p class="normal text">등록을 마치셨다면, 본인의 이름을 입력하고 입장해 주세요.</p>
+  </div>
+  
+  <div class="form">
+    <form id="authForm" action="/register" method="POST" class="form-clean-wrapper">
+      <h4 class="bold title">멤버 등록하기</h4>
+      <p class="normal light">등록할 구성원 이름 입력</p>
+      
+      <input type="text" name="username" id="usernameInput" placeholder="이름을 입력하세요" class="normal name" required>
+      
+      <button type="submit" class="b-button normal" id="submitBtn">SIGN UP</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
