@@ -1,0 +1,24 @@
+# 파이썬 캐시 파일 (컴퓨터가 실행 속도를 높이려고 만드는 파일들)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 파이썬 가상환경 폴더 (라이브러리가 설치되는 곳)
+venv/
+.venv/
+env/
+
+# SQLite 데이터베이스 파일
+*.db
+*.sqlite3
+
+# 맥 OS 숨김 파일
+.DS_Store
+
+# VS Code 설정 폴더 (개인 에디터 설정이라 공유할 필요 없음)
+.vscode/
+
+# API 인증키, 비밀번호 등이 들어가는 환경 변수 파일
+.env
+.env.local
